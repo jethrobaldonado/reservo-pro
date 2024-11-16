@@ -4,7 +4,6 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { useAuthStore } from "@/stores/auth";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -125,7 +124,7 @@ export const resetPasswordAction = async (formData: FormData) => {
     );
   }
 
-  encodedRedirect("success", "/protected/reset-password", "Password updated");
+  encodedRedirect("success", "/reset-password", "Password updated");
 };
 
 export const updateProfileAction = async (formData: FormData) => {
@@ -153,8 +152,35 @@ export const updateProfileAction = async (formData: FormData) => {
       error.message,
     );
   }
+  const supabase2 = await createClient();
+  const { data: userData } = await supabase2.auth.getUser();
 
-  encodedRedirect("success", "/welcome", "Display name updated");
+  if (userData?.user) {
+    const { id } = userData?.user;
+    const organizationName = formData.get('orgName') as string;
+    const description = formData.get('description') as string;
+    const organizationData = [
+      {
+        name: organizationName,
+        description,
+        owner: id
+      },
+    ];
+
+    const { data: orgData, error: orgError } = await supabase
+      .from('organization')
+      .insert(organizationData)
+      .select();
+
+    if (orgError) {
+      encodedRedirect(
+        "error",
+        "/welcome",
+        orgError.message,
+      );
+    }
+    encodedRedirect("success", "/dashboard", "");
+  }
 }
 
 export const getUserData = async () => {

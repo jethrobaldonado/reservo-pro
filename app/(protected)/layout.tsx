@@ -1,7 +1,16 @@
-export default function Layout({ children, }: {
-  children: React.ReactNode;
-}) {
+import { SidebarProvider } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+import { OrganizationProvider } from "@/contexts/OrganizationContext";
+
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="max-w-7xl flex flex-col gap-12 items-start">{children}</div>
-  );
+    <SidebarProvider>
+      <OrganizationProvider>
+        <AppSidebar />
+        <div className="flex justify-start max-w-full w-full">
+          {children}
+        </div>
+      </OrganizationProvider>
+    </SidebarProvider>
+  )
 }
