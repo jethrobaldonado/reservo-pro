@@ -4,6 +4,7 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { useAuthStore } from "@/stores/auth";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -44,7 +45,7 @@ export const signInAction = async (formData: FormData) => {
   const password = formData.get("password") as string;
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -53,7 +54,7 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return redirect("/protected");
+  return redirect("/");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
@@ -126,6 +127,50 @@ export const resetPasswordAction = async (formData: FormData) => {
 
   encodedRedirect("success", "/protected/reset-password", "Password updated");
 };
+
+export const updateProfileAction = async (formData: FormData) => {
+  const supabase = await createClient();
+  const displayName = formData.get('name') as string;
+
+  if (!displayName) {
+    encodedRedirect(
+      "error",
+      "/welcome",
+      "Display name missing",
+    );
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    data: {
+      displayName,
+    },
+  });
+
+  if (error) {
+    encodedRedirect(
+      "error",
+      "/welcome",
+      error.message,
+    );
+  }
+
+  encodedRedirect("success", "/welcome", "Display name updated");
+}
+
+export const getUserData = async () => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error) {
+    encodedRedirect(
+      "error",
+      "/not-found",
+      error.message,
+    );
+  }
+
+  return data;
+}
 
 export const signOutAction = async () => {
   const supabase = await createClient();
