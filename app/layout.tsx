@@ -43,7 +43,7 @@ export default function RootLayout({
                   <HeaderAuth />
                 </div>
               </nav>
-              <div className="max-w-full w-full px-5 mt-20">
+              <div className="max-w-full w-full mt-16">
                 {children}
               </div>
 

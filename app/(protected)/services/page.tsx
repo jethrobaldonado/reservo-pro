@@ -8,7 +8,7 @@ export default async function Services() {
   const data: TService[] | undefined = await getAllServices();
 
   return (
-    <div className="flex flex-col w-full max-w-xxl">
+    <div className="flex flex-col w-full max-w-xxl px-5 pt-4">
       <div className="flex">
         <Button asChild>
           <Link href="/services/create">Create Service</Link>

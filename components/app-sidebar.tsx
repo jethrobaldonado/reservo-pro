@@ -1,4 +1,4 @@
-import { Home, GitFork } from "lucide-react";
+import { Home, GitFork, Users, NotebookPen, Building } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,7 +21,22 @@ const items = [
     url: "/services",
     icon: GitFork,
   },
-]
+  {
+    title: "Brand Profile",
+    url: "/brand",
+    icon: Building,
+  },
+  {
+    title: "Booking Page",
+    url: "/booking",
+    icon: NotebookPen,
+  },
+  {
+    title: "Members",
+    url: "/members",
+    icon: Users,
+  },
+];
 
 export function AppSidebar() {
   return (

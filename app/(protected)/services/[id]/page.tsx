@@ -19,7 +19,7 @@ export default async function UpdateService(props: {
     await updateService(formData, id);
   };
   return (
-    <div className="flex flex-col w-full max-w-full items-center">
+    <div className="flex flex-col w-full max-w-full items-center px-5">
       <FormMessage message={searchParams}/>
       <form className="flex flex-col w-full max-w-lg p-4 gap-2 [&>input]:mb-4">
         <h1 className="text-2xl font-medium">Update service</h1>

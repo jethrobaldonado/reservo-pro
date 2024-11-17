@@ -170,7 +170,8 @@ export const updateProfileAction = async (formData: FormData) => {
     const { data: orgData, error: orgError } = await supabase
       .from('organization')
       .insert(organizationData)
-      .select();
+      .select()
+      .single();
 
     if (orgError) {
       encodedRedirect(
@@ -179,6 +180,25 @@ export const updateProfileAction = async (formData: FormData) => {
         orgError.message,
       );
     }
+    console.log(orgData);
+    if (orgData?.id) {
+      const { data: memberData, error: memberError } = await supabase
+        .from('members')
+        .insert({
+          user_id: id,
+          organization_id: orgData.id,
+        })
+        .select();
+      console.log(memberData);
+      if (memberError) {
+        encodedRedirect(
+          "error",
+          "/welcome",
+          memberError.message,
+        );
+      }
+    }
+
     encodedRedirect("success", "/dashboard", "");
   }
 }

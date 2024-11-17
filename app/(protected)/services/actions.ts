@@ -11,20 +11,23 @@ export async function getAllServices() {
   const supabase = await createClient();
   try {
     const organization = await getUserOrganization();
-    const { data, error } = await supabase
-      .from('services')
-      .select(`
+    console.log(organization);
+    if (organization?.organization_id) {
+      const { data, error } = await supabase
+        .from('services')
+        .select(`
         id,
         name,
         created_at,
         updated_at
       `)
-      .order('updated_at', { ascending: false })
-      .eq('organization_id', organization?.organization_id);
-    if (error) {
-      throw new Error(error.message, { cause: 'Query'})
+        .order('updated_at', { ascending: false })
+        .eq('organization_id', organization?.organization_id);
+      if (error) {
+        throw new Error(error.message, { cause: 'Query'})
+      }
+      return data as TService[];
     }
-    return data as TService[];
   } catch (error) {
     console.error(error);
   }
@@ -72,7 +75,7 @@ export async function insertService(formData: FormData) {
           organization_id: organization.organization_id,
           name,
           description,
-          created_by: user?.id
+          created_by: user?.id,
         })
       .select()
       .single();

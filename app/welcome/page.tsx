@@ -4,13 +4,16 @@ import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { redirect } from "next/navigation";
 
 export default async function ResetPassword(props: {
   searchParams: Promise<Message>;
 }) {
   const searchParams = await props.searchParams;
   const { user } = await getUserData();
-  console.log(searchParams);
+  if (user) {
+    redirect('/');
+  }
   return (
     <div className="flex flex-col items-center">
       <form className="flex flex-col w-full max-w-md p-4 gap-2 [&>input]:mb-4">

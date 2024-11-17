@@ -3,7 +3,8 @@ import { type NextRequest, NextResponse } from "next/server";
 const publicRoutes = [
   '/sign-in',
   '/forgot-password',
-  '/'
+  '/',
+  '/sign-up',
 ];
 export const updateSession = async (request: NextRequest) => {
   try {
@@ -40,20 +41,17 @@ export const updateSession = async (request: NextRequest) => {
     // https://supabase.com/docs/guides/auth/server-side/nextjs
     const user = await supabase.auth.getUser();
     const { pathname } = request.nextUrl;
-    // protected routes
+
+    if (!user.error && !user?.data.user.user_metadata.displayName && pathname !== '/welcome') {
+      return NextResponse.redirect(new URL("/welcome", request.url));
+    }
+
     if (!publicRoutes.includes(pathname) && user.error) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }
 
-    // if (request.nextUrl.pathname === "/" && !user.error) {
-    //   return NextResponse.redirect(new URL("/protected", request.url));
-    // }
-
     return response;
   } catch (e) {
-    // If you are here, a Supabase client could not be created!
-    // This is likely because you have not set up environment variables.
-    // Check out http://localhost:3000 for Next Steps.
     return NextResponse.next({
       request: {
         headers: request.headers,
